@@ -1,27 +1,35 @@
 import os
 from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
-# On charge les variables du fichier .env
 load_dotenv()
 
-# On vérifie si la clé est bien là, sinon on râle avec élégance
 if not os.environ.get("GEMINI_API_KEY"):
-    raise ValueError("🚨 Oups ! Il manque la GEMINI_API_KEY dans ton fichier .env.")
+    raise ValueError("🚨 Oops! GEMINI_API_KEY is missing in your .env file.")
 
-# Initialisation du client (il trouve la clé dans l'environnement tout seul)
 client = genai.Client()
 
+# The System Prompt in English
+system_prompt = (
+    "You are Gemini Code, an expert AI developer and terminal assistant "
+    "powered by Gemini. You are currently running in a CLI interface on Debian Linux. "
+    "You are talking to a developer, you are precise, technical, and you always "
+    "format your responses with elegant Markdown."
+)
+
+chat_session = client.chats.create(
+    model='gemini-2.5-flash',
+    config=types.GenerateContentConfig(
+        system_instruction=system_prompt,
+        temperature=0.7, 
+    )
+)
+
 def ask_gemini(prompt: str) -> str:
-    """
-    Envoie un message à l'API et récupère la réponse.
-    """
+    """Sends the message to the active chat session."""
     try:
-        # On utilise gemini-2.5-flash : rapide, efficace, parfait pour un CLI
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt,
-        )
+        response = chat_session.send_message(prompt)
         return response.text
     except Exception as e:
-        return f"❌ Aïe, court-circuit lors de la communication avec l'API : {e}"
+        return f"❌ API short-circuit: {e}"
