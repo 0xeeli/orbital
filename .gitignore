@@ -1,0 +1,16 @@
+# .gitignore
+# Les environnements virtuels
+venv/
+env/
+
+# Les variables d'environnement (NE JAMAIS COMMIT LE VRAI .env !)
+.env
+
+# Les fichiers générés par Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Fichiers système
+.DS_Store
+Thumbs.db
