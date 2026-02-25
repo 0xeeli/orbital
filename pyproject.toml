@@ -16,6 +16,4 @@ dependencies = [
 ]
 
 [project.scripts]
-# C'est ici la magie : on dit au système de créer une commande 'orbital' 
-# qui va lancer la fonction 'app' du fichier 'cli/main.py'
 orbital = "cli.main:app"

@@ -2,16 +2,16 @@ import typer
 from rich.prompt import Prompt
 from rich.console import Console
 
-# L'import relatif crucial pour que ça marche une fois installé globalement
+# Relative imports for the package to work globally
 from . import api, ui
 
-# C'est CETTE variable 'app' que la commande 'orbital' vient chercher
 app = typer.Typer(help="Orbital: The coolest AI CLI in the galaxy.")
 console = Console()
 
 @app.command()
 def chat():
     """Starts the interactive chat with Orbital."""
+    console.clear()
     ui.show_welcome()
 
     while True:
@@ -20,6 +20,13 @@ def chat():
         if user_input.lower() in ["quit", "exit", "q"]:
             console.print("\n[bold cyan]Session closed. See you![/bold cyan] 🐧👋\n")
             break
+            
+        if user_input.lower() == "/clear":
+            api.clear_history()
+            console.clear()
+            ui.show_welcome()
+            console.print("[bold green]✨ Memory wiped! Fresh start.[/bold green]\n")
+            continue
         
         if not user_input.strip():
             continue
