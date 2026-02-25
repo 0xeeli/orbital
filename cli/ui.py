@@ -1,6 +1,7 @@
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
+from rich.live import Live
 
 console = Console()
 
@@ -12,13 +13,23 @@ def show_welcome():
     )
     console.print(Panel(welcome_text, border_style="cyan", expand=False))
 
-def show_error(message: str):
-    """Displays errors in red."""
-    console.print(f"\n[bold red]🚨 Oops:[/bold red] {message}\n")
-
-def show_response(text: str):
-    """Renders raw text nicely with Markdown support."""
-    console.print() 
-    markdown_content = Markdown(text)
-    console.print(Panel(markdown_content, title="🤖 [bold green]Gemini[/bold green]", title_align="left", border_style="green"))
+def stream_response(response_generator):
+    """Renders streamed text dynamically with Markdown support."""
+    console.print()
+    full_text = ""
+    
+    # Le composant Live met à jour l'affichage en temps réel (15 fps)
+    with Live(refresh_per_second=15, console=console) as live:
+        for chunk in response_generator:
+            full_text += chunk
+            markdown_content = Markdown(full_text)
+            panel = Panel(
+                markdown_content, 
+                title="🤖 [bold green]Gemini[/bold green]", 
+                title_align="left", 
+                border_style="green"
+            )
+            # On met à jour le panel avec le nouveau texte
+            live.update(panel)
+            
     console.print()

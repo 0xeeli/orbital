@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orbital-cli"
+version = "0.1.0"
+description = "A modern, AI-powered terminal assistant running on Gemini."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai>=0.3.0",
+    "typer>=0.12.0",
+    "rich>=13.7.0",
+    "python-dotenv>=1.0.1",
+]
+
+[project.scripts]
+# C'est ici la magie : on dit au système de créer une commande 'orbital' 
+# qui va lancer la fonction 'app' du fichier 'cli/main.py'
+orbital = "cli.main:app"
