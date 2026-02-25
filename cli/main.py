@@ -1,3 +1,4 @@
+
 import typer
 from rich.prompt import Prompt
 from rich.console import Console
@@ -18,8 +19,8 @@ def chat():
     while True:
         user_input = Prompt.ask("\n[bold magenta]You[/bold magenta]")
         
-        # Magic words to quit
-        if user_input.lower() in ["quit", "exit", "q"]:
+        # Magic words to quit (now with slash support)
+        if user_input.lower() in ["quit", "exit", "q", "/quit", "/exit", "/q"]:
             console.print("\n[bold cyan]Session closed. See you![/bold cyan] 🐧👋\n")
             break
             
