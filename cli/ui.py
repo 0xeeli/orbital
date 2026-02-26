@@ -3,6 +3,7 @@ from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.live import Live
 from rich.theme import Theme
+from rich.table import Table
 
 # Custom theme for a modern CLI experience
 custom_theme = Theme({
@@ -23,9 +24,27 @@ def show_welcome():
         "[info]▸[/info] [bold]/read[/bold] <file>  : Analyze a local file\n"
         "[info]▸[/info] [bold]/run[/bold] <cmd>    : Execute a shell command\n"
         "[info]▸[/info] [bold]/clear[/bold]       : Wipe memory context\n"
+        "[info]▸[/info] [bold]/help[/bold]        : Show command reference\n"
         "[info]▸[/info] [bold]/exit[/bold]        : Close the session"
     )
     console.print(Panel(welcome_text, border_style="cyan", padding=(1, 2), expand=False))
+
+def show_help():
+    """Displays a detailed command reference table."""
+    table = Table(title="Orbital Command Reference", border_style="cyan", show_header=True, header_style="bold magenta")
+    
+    table.add_column("Command", style="bold cyan", no_wrap=True)
+    table.add_column("Arguments", style="dim white")
+    table.add_column("Description", style="white")
+    table.add_column("Example", style="dim green")
+
+    table.add_row("/read", "<file_path>", "Read and memorize a local file", "/read main.py")
+    table.add_row("/run", "<command>", "Execute a shell command & analyze output", "/run ls -la")
+    table.add_row("/clear", "", "Wipe chat memory & clear screen", "/clear")
+    table.add_row("/help", "", "Show this help message", "/help")
+    table.add_row("/exit", "", "Exit the application", "/exit")
+
+    console.print(Panel(table, border_style="dim cyan", expand=False))
 
 def show_error(message: str):
     """Displays errors with high visibility."""
@@ -49,7 +68,6 @@ def stream_response(response_generator):
         for chunk in response_generator:
             full_text += chunk
             markdown_content = Markdown(full_text)
-            # Upgraded panel with padding for better readability
             panel = Panel(
                 markdown_content, 
                 title="🤖 [bold bright_green]Orbital[/bold bright_green]", 

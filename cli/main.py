@@ -33,6 +33,11 @@ def chat():
             ui.show_status("Memory wiped! Fresh start.")
             continue
             
+        # Help command
+        if user_input.lower() == "/help":
+            ui.show_help()
+            continue
+
         # --- THE /run COMMAND ---
         if user_input.lower().startswith("/run"):
             command_str = user_input[4:].strip()
