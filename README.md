@@ -42,6 +42,7 @@ orbital
 * `quit`, `exit`, `q` : Close the session.
 * `/clear` : Wipe the AI's memory and start a fresh context.
 * `/read <file_path>` : Load a local file into Orbital's memory for analysis (e.g., `/read cli/main.py`).
+* `/run <command>` : Execute a shell command and let Orbital analyze the output (e.g., `/run ls -la` or `/run pytest`).
 
 ---
 *Built with [Typer](https://typer.tiangolo.com/), [Rich](https://rich.readthedocs.io/), and [Google GenAI](https://ai.google.dev/).*
