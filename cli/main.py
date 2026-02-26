@@ -17,11 +17,12 @@ def chat():
     ui.show_welcome()
 
     while True:
-        user_input = Prompt.ask("\n[bold magenta]You[/bold magenta]")
+        # Sleeker prompt
+        user_input = Prompt.ask("\n[bold magenta]❯ You[/bold magenta]")
         
         # Magic words to quit
         if user_input.lower() in ["quit", "exit", "q", "/quit", "/exit", "/q"]:
-            console.print("\n[bold cyan]Session closed. See you![/bold cyan] 🐧👋\n")
+            console.print("\n[bold cyan]Session closed. See you in orbit! 🐧👋[/bold cyan]\n")
             break
             
         # Wipe memory command
@@ -29,40 +30,37 @@ def chat():
             api.clear_history()
             console.clear()
             ui.show_welcome()
-            console.print("[bold green]✨ Memory wiped! Fresh start.[/bold green]\n")
+            ui.show_status("Memory wiped! Fresh start.")
             continue
             
         # --- THE /run COMMAND ---
         if user_input.lower().startswith("/run"):
-            # Extract the command string
             command_str = user_input[4:].strip()
             
             if not command_str:
-                console.print("[bold red]🚨 Oops: You need to specify a command. Example: /run ls -la[/bold red]")
+                ui.show_error("You need to specify a command. Example: /run ls -la")
                 continue
                 
-            console.print(f"[dim cyan]⚡ Executing: '{command_str}'...[/dim cyan]")
+            ui.show_status(f"Executing: '{command_str}'...")
             
             try:
-                # Run the command in the shell
                 result = subprocess.run(
                     command_str, 
                     shell=True, 
                     capture_output=True, 
                     text=True, 
-                    timeout=60 # Safety: kill the process if it hangs for more than 1 minute
+                    timeout=60
                 )
                 
-                # Combine standard output and standard error
                 output = result.stdout + result.stderr
                 
-                # Handle silent commands (like 'mkdir')
                 if not output.strip():
                     output = "[Command executed successfully with no output]"
                     
-                console.print("[dim cyan]🧠 Analyzing output...[/dim cyan]")
+                # Display the raw output in a nice panel before analyzing
+                ui.show_raw_output(output)
+                ui.show_status("Analyzing output...")
                 
-                # The prompt for the AI
                 prompt = (
                     f"I executed the shell command: `{command_str}`\n\n"
                     f"Here is the terminal output:\n```\n{output}\n```\n\n"
@@ -74,9 +72,9 @@ def chat():
                 ui.stream_response(response_generator)
                 
             except subprocess.TimeoutExpired:
-                console.print("[bold red]🚨 Oops: Command timed out after 60 seconds.[/bold red]")
+                ui.show_error("Command timed out after 60 seconds.")
             except Exception as e:
-                console.print(f"[bold red]🚨 Oops: Failed to execute command. Error: {e}[/bold red]")
+                ui.show_error(f"Failed to execute command. Error: {e}")
             
             continue
         # -----------------------------
@@ -86,7 +84,7 @@ def chat():
             file_path_str = user_input[5:].strip()
             
             if not file_path_str:
-                console.print("[bold red]🚨 Oops: You need to specify a file path. Example: /read cli/main.py[/bold red]")
+                ui.show_error("You need to specify a file path. Example: /read cli/main.py")
                 continue
                 
             file_path = Path(file_path_str)
@@ -95,22 +93,22 @@ def chat():
             try:
                 absolute_file_path = file_path.resolve(strict=True)
             except FileNotFoundError:
-                console.print(f"[bold red]🚨 Oops: File '{file_path_str}' not found.[/bold red]")
+                ui.show_error(f"File '{file_path_str}' not found.")
                 continue
             
             if not absolute_file_path.is_file():
-                console.print(f"[bold red]🚨 Oops: '{file_path_str}' is not a valid file.[/bold red]")
+                ui.show_error(f"'{file_path_str}' is not a valid file.")
                 continue
 
             if not absolute_file_path.is_relative_to(base_dir):
-                console.print("[bold red]🚨 Security Alert: Reading files outside the current directory is forbidden.[/bold red]")
+                ui.show_error("Security Alert: Reading files outside the current directory is forbidden.")
                 continue
                 
             try:
                 with open(absolute_file_path, "r", encoding="utf-8") as f:
                     file_content = f.read()
                 
-                console.print(f"[dim cyan]📂 Injecting '{absolute_file_path.name}' into Orbital's memory...[/dim cyan]")
+                ui.show_status(f"Injecting '{absolute_file_path.name}' into Orbital's memory...")
                 
                 prompt = (
                     f"Please read the following file named '{absolute_file_path.name}':\n\n"
@@ -122,7 +120,7 @@ def chat():
                 ui.stream_response(response_generator)
                 
             except Exception as e:
-                console.print(f"[bold red]🚨 Oops: Could not read file. Error: {e}[/bold red]")
+                ui.show_error(f"Could not read file. Error: {e}")
             
             continue
         # -----------------------------
@@ -130,6 +128,7 @@ def chat():
         if not user_input.strip():
             continue
 
+        # Standard chat flow
         response_generator = api.stream_gemini(user_input)
         ui.stream_response(response_generator)
 
