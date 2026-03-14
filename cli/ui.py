@@ -18,16 +18,22 @@ console = Console(theme=custom_theme)
 def show_welcome():
     """Displays a sleek, modern welcome banner."""
     welcome_text = (
-        "[bold cyan]🪐 Welcome to ORBITAL CLI[/bold cyan]\n"
-        "─────────────────────────────────────────\n"
-        "Ask anything, or use these core commands:\n\n"
-        "[info]▸[/info] [bold]/read[/bold] <file>  : Analyze a local file\n"
-        "[info]▸[/info] [bold]/run[/bold] <cmd>    : Execute a shell command\n"
-        "[info]▸[/info] [bold]/clear[/bold]       : Wipe memory context\n"
-        "[info]▸[/info] [bold]/help[/bold]        : Show command reference\n"
-        "[info]▸[/info] [bold]/exit[/bold]        : Close the session"
+        "[bold cyan]🪐 ORBITAL CLI[/bold cyan]\n"
+        "────────────────────────────────────────────────────────────────────────────\n"
+        "[dim]Your AI copilot in the terminal to explore your codebase, run commands,[/dim]\n"
+        "[dim]and iterate on ideas without leaving the shell.[/dim]\n\n"
+        "[bold]Quick commands[/bold]\n"
+        "[info]▸[/info] [bold]/read[/bold] <file>       : Read and memorize a local file\n"
+        "[info]▸[/info] [bold]/run[/bold] <cmd>        : Execute a shell command & analyze output\n"
+        "[info]▸[/info] [bold]/clear[/bold]           : Clear screen and reset conversation context\n"
+        "[info]▸[/info] [bold]/help[/bold]            : Show detailed command reference\n"
+        "[info]▸[/info] [bold]/exit[/bold]            : Close the session\n\n"
+        "[bold]Examples[/bold]\n"
+        "[dim]• /read cli/ui.py then ask: \"How can we improve this UI?\"[/dim]\n"
+        "[dim]• /run pytest and let Orbital summarize failing tests.[/dim]\n\n"
+        "[dim]You can also just start typing in natural language and Orbital will respond.[/dim]"
     )
-    console.print(Panel(welcome_text, border_style="cyan", padding=(1, 2), expand=False))
+    console.print(Panel(welcome_text, border_style="cyan", padding=(1, 4), expand=True))
 
 def show_help():
     """Displays a detailed command reference table."""
